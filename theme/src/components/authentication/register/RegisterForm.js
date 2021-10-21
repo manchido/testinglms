@@ -48,7 +48,7 @@ export default function RegisterForm() {
           // localStorage.setItem('test_token', '');
           // localStorage.setItem('test_token', response.data.token);
           // props.history.push('/dashboard');  
-          navigate('/dashboard', { replace: true });
+          navigate('/dashboard/app', { replace: true });
           console.log(response);
         }
         else {

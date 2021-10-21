@@ -54,7 +54,7 @@ export default function LoginForm() {
           // localStorage.setItem('test_token', '');
           // localStorage.setItem('test_token', response.data.token);
           // props.history.push('/dashboard'); */  
-          navigate('/dashboard', { replace: true });
+          navigate('/dashboard/app', { replace: true });
         }
         else {
           // isSubmitting = false;
