@@ -5,6 +5,8 @@ import { useFormik, Form, FormikProvider } from 'formik';
 import { Icon } from '@iconify/react';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
+import axios from 'axios';
+
 // material
 import {
   Link,
@@ -16,12 +18,16 @@ import {
   FormControlLabel
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import { setUserSession,removeUserSession } from '../../../utils/Common';
 
 // ----------------------------------------------------------------------
 
 export default function LoginForm() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(null);
+ 
+  removeUserSession('user_token'); removeUserSession('user_info');
 
   const LoginSchema = Yup.object().shape({
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
@@ -35,9 +41,32 @@ export default function LoginForm() {
       remember: true
     },
     validationSchema: LoginSchema,
-    onSubmit: () => {
-      navigate('/dashboard', { replace: true });
-    }
+    onSubmit: values => {
+      // isSubmitting = true;
+      // alert(JSON.stringify(values, null, 2));
+      
+      
+      axios.post(`${process.env.REACT_APP_API_URL}/api/login`, { email: values.email, password: values.password }).then(response => {
+        
+        if (response.data.msg === 'valid') {
+           setUserSession('user_token',response.data.token);
+           setUserSession('user_info',response.data.user);
+          // localStorage.setItem('test_token', '');
+          // localStorage.setItem('test_token', response.data.token);
+          // props.history.push('/dashboard'); */  
+          navigate('/dashboard', { replace: true });
+        }
+        else {
+          // isSubmitting = false;
+          setError("username or password incorrect.");
+        }
+
+      }).catch(error => {
+        // setLoading(false);
+        // if (error.response.status === 401) setError(error.response.data.message);
+         setError("Something went wrong. Please try again later.");
+      });
+    },
   });
 
   const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
@@ -47,9 +76,11 @@ export default function LoginForm() {
   };
 
   return (
+    
     <FormikProvider value={formik}>
       <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
         <Stack spacing={3}>
+        {error && <><small style={{ color: 'red' }}>{error}</small><br /></>}<br />
           <TextField
             fullWidth
             autoComplete="username"
@@ -96,7 +127,7 @@ export default function LoginForm() {
           size="large"
           type="submit"
           variant="contained"
-          loading={isSubmitting}
+          
         >
           Login
         </LoadingButton>

@@ -11,7 +11,7 @@ const Users = db.users;
 const app = express();
 
 var corsOptions = {
-  origin: "http://localhost"
+  origin: "http://localhost:8003"
 };
 
 app.use(cors(corsOptions));
@@ -33,11 +33,15 @@ app.post("/api/register", async (req, res) => {
     // Our register logic starts here
     try {
       // Get user input
-      const { first_name, last_name, email, password } = req.body;
+      const { firstName, lastName, email, password } = req.body;
   
       // Validate user input
-      if (!(email && password && first_name && last_name)) {
-        res.status(400).send("All input is required");
+      if (!(email && password && firstName && lastName)) {
+        
+        res.status(200).json({
+          status: 'error',
+          msg: 'All input is required',          
+        });
       }
   
       // check if user already exist
@@ -45,35 +49,57 @@ app.post("/api/register", async (req, res) => {
       const oldUser = await Users.findOne({ email });
   
       if (oldUser) {
-        return res.status(409).send("User Already Exist. Please Login");
+        res.status(200).json({
+          status: 'error',
+          msg: 'User Already Exist. Please Login',          
+        });
       }
   
       //Encrypt user password
       encryptedPassword = await bcrypt.hash(password, 10);
   
       // Create user in our database
-      const user1 = await Users.create({
-        first_name,
-        last_name,
+      const user = await Users.create({
+        firstName,
+        lastName,
         email: email.toLowerCase(), // sanitize: convert email to lowercase
         password: encryptedPassword,
       });
   
-      // Create token
-      const token = jwt.sign(
-        { user_id: user1._id, email },
-        process.env.TOKEN_KEY,
-        {
-          expiresIn: "2h",
-        }
-      );
+      if(user._id){
+        // Create token
+        const token = jwt.sign(
+          { user_id: user._id, email },
+           process.env.TOKEN_KEY,
+          {
+            expiresIn: "2h",
+          }
+        );
       // save user token
-      user1.token = token;
+      
+      const result = user;      
+      result.token = token;
   
       // return new user
-      res.status(201).json(user1);
+     
+      res.status(200).json({
+        status: 'succes',
+        msg: 'valid',
+        data: result,
+        token:result.token
+      });
+     }
+     else{
+      res.status(200).json({
+        status: 'error',
+        msg: 'Technical problem. Please try again later.',          
+      });
+     }
     } catch (err) {
-      console.log(err);
+      res.status(200).json({
+        status: 'error',
+        msg: err,          
+      });
     }
     // Our register logic ends here
   });
@@ -118,11 +144,15 @@ app.post("/api/login", async (req, res) => {
         console.log('result : ',result);
         res.status(200).json({
           status: 'succes',
+          msg: 'valid',
           data: result,
           token:result.token
         });
       }else{
-        res.status(400).send("Invalid Credentials");
+        res.status(200).json({
+          status: 'error',
+          msg: 'Please enter valid username and password',          
+        });
       }
      
     } catch (err) {

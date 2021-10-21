@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 // material
 import { Box, Grid, Container, Typography } from '@mui/material';
 // components
@@ -20,6 +21,8 @@ import {
 // ----------------------------------------------------------------------
 
 export default function DashboardApp() {
+  const navigate = useNavigate();
+  if(sessionStorage.getItem('token') === '' || sessionStorage.getItem('token') === null){
   return (
     <Page title="Dashboard | Minimal-UI">
       <Container maxWidth="xl">
@@ -75,4 +78,8 @@ export default function DashboardApp() {
       </Container>
     </Page>
   );
+  }
+  
+  navigate('/login', { replace: true });
+  
 }
