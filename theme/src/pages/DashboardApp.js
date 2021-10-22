@@ -24,7 +24,7 @@ export default function DashboardApp() {
   const navigate = useNavigate();
   if(sessionStorage.getItem('token') === '' || sessionStorage.getItem('token') === null){
   return (
-    <Page title="Dashboard | Minimal-UI">
+    <Page title="Dashboard | Nudge">
       <Container maxWidth="xl">
         <Box sx={{ pb: 5 }}>
           <Typography variant="h4">Hi, Welcome back</Typography>
