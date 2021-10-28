@@ -80,3 +80,4 @@ react-crud/yarn-debug.log*
 react-crud/yarn-error.log*
 
 react-crud/.eslintcache
+app/config/db.config.js
