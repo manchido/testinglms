@@ -1,5 +1,7 @@
+const bcrypt = require('bcryptjs');
 const db = require("../models");
-const User = db.users;
+const Users = db.users;
+const jwt = require("jsonwebtoken");
 
 /*username: String,
 email: String,
@@ -7,48 +9,167 @@ password: String,
 status:Boolean */
 
 // Create and Save a new Tutorial
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
   // Validate request
-  if (!req.body.username) {
-    res.status(400).send({ message: "Username can not be empty!" });
-    return;
+  if (!req.body.lastName) {
+      res.send({
+      status: 'error',
+      msg: 'Lastname can not be empty!',          
+    });
+   
   }
-  if (!req.body.name) {
-    res.status(400).send({ message: "Name can not be empty!" });
-    return;
+  if (!req.body.firstName) {
+    
+    res.send({
+      status: 'error',
+      msg: 'FirstName can not be empty!',          
+    });
+    
   }
   if (!req.body.email) {
-    res.status(400).send({ message: "Email can not be empty!" });
-    return;
+ 
+    res.send({
+      status: 'error',
+      msg: 'Email can not be empty!',          
+    });
+   
   }
   if (!req.body.password) {
-    res.status(400).send({ message: "Password can not be empty!" });
-    return;
+   
+    res.send({
+      status: 'error',
+      msg: 'Password can not be empty!',          
+    });
+    
   }
 
+  try {
+    // Get user input
+    const { firstName, lastName, email, password } = req.body;
 
-  // Create a Tutorial
-  let user = new User({
-    username: req.body.username,
-    email: req.body.email,
-    password: req.body.password,
-    name: req.body.name,
-    status: 1
-
-  });
-
-  // Save Tutorial in the database
-  user.save(user)
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the User."
+    // Validate user input
+    if (!(email && password && firstName && lastName)) {
+      
+      res.send({
+        status: 'error',
+        msg: 'All input is required',          
       });
+    }
+
+    // check if user already exist
+    // Validate if user exist in our database
+    const oldUser = await Users.findOne({ email });
+
+    if (oldUser) {
+      res.send({
+        status: 'error',
+        msg: 'User Already Exist. Please Login',          
+      });
+    }
+
+    //Encrypt user password
+    encryptedPassword = await bcrypt.hash(password, 10);
+
+    // Create user in our database
+    const user = await Users.create({
+      firstName,
+      lastName,
+      email: email.toLowerCase(), // sanitize: convert email to lowercase
+      password: encryptedPassword,
+      status: 1
     });
+    user.password=''; 
+    console.log(user);
+    if(user._id){ 
+
+      var user1 = JSON.parse(JSON.stringify(user));
+
+      const token = jwt.sign(
+        { user_id: user._id, email },
+        process.env.TOKEN_KEY,
+        {
+          expiresIn: "2h",
+        }
+      );
+      
+      
+      user1.password='';
+      user1.displayName='TT';
+      user1.role = 'admin';
+      user1.accessToken = token;
+      user1.photoURL='https://i.stack.imgur.com/l60Hf.png';
+      res.status(200).send({
+        status: 'succes',
+        msg: 'valid',
+        data: user1,
+      
+      });
+     
+   }
+   else{
+    res.send({
+      status: 'error',
+      msg: 'Technical problem. Please try again later.',          
+    });
+   }
+  } catch (err) {
+    console.log(err);
+    res.send({
+      status: 'error',
+      msg: 'catch error',          
+    });
+  }
+
 };
+
+exports.login = async (req, res) => {
+  try {
+    // Get user input
+    const { email, password } = req.body;
+
+    // Validate user input
+    if (!(email && password)) {
+      res.status(400).send("All input is required");
+    }
+    // Validate if user exist in our database
+    var user = await Users.findOne({ email });
+
+    if (user && (await bcrypt.compare(password, user.password))) {  
+      
+      var user1 = JSON.parse(JSON.stringify(user));
+
+      const token = jwt.sign(
+        { user_id: user._id, email },
+        process.env.TOKEN_KEY,
+        {
+          expiresIn: "2h",
+        }
+      );
+      
+      
+      user1.password='';
+      user1.displayName='TT';
+      user1.role = 'admin';
+      user1.accessToken = token;
+      user1.photoURL='https://i.stack.imgur.com/l60Hf.png';
+      res.status(200).send({
+        status: 'succes',
+        msg: 'valid',
+        data: user1,
+      
+      });
+    }else{
+      res.status(200).send({
+        status: 'error',
+        msg: 'Please enter valid username and password',          
+      });
+    }
+  
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 
 // Retrieve all Tutorials from the database.
 exports.findAll = (req, res) => {
@@ -65,7 +186,7 @@ exports.findAll = (req, res) => {
   }
 
 
-  User.find(condition)
+  Users.find(condition)
     .then(data => {
       res.send(data);
     })
@@ -81,7 +202,7 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
-  User.findById(id)
+  Users.findById(id)
     .then(data => {
       if (!data)
         res.status(404).send({ message: "Not found Users with id " + id });
@@ -104,7 +225,7 @@ exports.update = (req, res) => {
 
   const id = req.params.id;
 
-  User.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+  Users.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
     .then(data => {
       if (!data) {
         res.status(404).send({
@@ -123,7 +244,7 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
   const id = req.params.id;
 
-  User.findByIdAndRemove(id)
+  Users.findByIdAndRemove(id)
     .then(data => {
       if (!data) {
         res.status(404).send({
@@ -144,7 +265,7 @@ exports.delete = (req, res) => {
 
 // Delete all Tutorials from the database.
 exports.deleteAll = (req, res) => {
-  User.deleteMany({})
+  Users.deleteMany({})
     .then(data => {
       res.send({
         message: `${data.deletedCount} Users were deleted successfully!`
@@ -161,7 +282,7 @@ exports.deleteAll = (req, res) => {
 // Find all published Tutorials
 exports.findByName = (req, res) => {
   var condition = req.body.name ? { name: { $regex: new RegExp(req.body.name), $options: "i" } } : {};
-  User.find({ condition })
+  Users.find({ condition })
     .then(data => {
       res.send(data);
     })

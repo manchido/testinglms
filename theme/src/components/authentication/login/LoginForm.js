@@ -5,7 +5,7 @@ import { useFormik, Form, FormikProvider } from 'formik';
 import { Icon } from '@iconify/react';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import eyeOffFill from '@iconify/icons-eva/eye-off-fill';
-import axios from 'axios';
+// import axios from 'axios';
 
 // material
 import {
@@ -19,6 +19,7 @@ import {
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { setUserSession,removeUserSession } from '../../../utils/Common';
+import http from "../../../utils/http-common";
 
 // ----------------------------------------------------------------------
 
@@ -27,7 +28,7 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
  
-  removeUserSession('user_token'); removeUserSession('user_info');
+ removeUserSession('user_info');
 
   const LoginSchema = Yup.object().shape({
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
@@ -46,7 +47,7 @@ export default function LoginForm() {
       // alert(JSON.stringify(values, null, 2));
       
       
-      axios.post(`${process.env.REACT_APP_API_URL}/api/login`, { email: values.email, password: values.password }).then(response => {
+      http.post(`/api/users/login`, { email: values.email, password: values.password }).then(response => {
         
         if (response.data.msg === 'valid') {
            setUserSession('user_token',response.data.token);

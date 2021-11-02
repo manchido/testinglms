@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const db = require("./app/models");
 
-const Users = db.users;
+const Apiusers = db.apiusers;
 
 const app = express();
 
@@ -28,7 +28,7 @@ app.get("/api", (req, res) => {
   res.json({ message: "Welcome to bezkoder application." });
 });
 
-app.post("/api/register", async (req, res) => {
+/* app.post("/api/register", async (req, res) => {
 
     // Our register logic starts here
     try {
@@ -102,11 +102,11 @@ app.post("/api/register", async (req, res) => {
       });
     }
     // Our register logic ends here
-  });
+  }); */
 
 
 
-app.post("/api/login", async (req, res) => {
+app.post("/api/token", async (req, res) => {
 
     // Our login logic starts here
     try {
@@ -118,7 +118,7 @@ app.post("/api/login", async (req, res) => {
         res.status(400).send("All input is required");
       }
       // Validate if user exist in our database
-      var user = await Users.findOne({ email });
+      var user = await Apiusers.findOne({ email });
   
       if (user && (await bcrypt.compare(password, user.password))) {
         // Create token
@@ -144,9 +144,8 @@ app.post("/api/login", async (req, res) => {
         console.log('result : ',result);
         res.status(200).json({
           status: 'succes',
-          msg: 'valid',
-          data: result,
-          token:result.token
+          msg: 'valid',        
+          token:token
         });
       }else{
         res.status(200).json({

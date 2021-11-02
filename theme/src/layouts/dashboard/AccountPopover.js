@@ -53,7 +53,7 @@ export default function AccountPopover() {
 
   const logout = () => {
     
-    removeUserSession('user_token'); removeUserSession('user_info');
+    removeUserSession('api_token'); removeUserSession('user_info');
     navigate('/', { replace: true });
   }
   
