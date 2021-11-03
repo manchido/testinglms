@@ -42,7 +42,15 @@ const Loadable = (Component) => (props) => {
 export default function Router() {
   return useRoutes([
     {
-      path: 'auth',
+      path: '/',
+      element: (
+        <GuestGuard>
+          <Login />
+        </GuestGuard>
+      )
+    },
+    {
+      path: 'auth',    
       children: [
         {
           path: 'login',
@@ -157,7 +165,7 @@ export default function Router() {
       ]
     },
     {
-      path: '/',
+      path: 'pages',
       element: <MainLayout />,
       children: [
         { path: '/', element: <LandingPage /> },
