@@ -56,6 +56,8 @@ exports.create = async (req, res) => {
       });
     }
 
+    console.log(req.body);
+
     // check if user already exist
     // Validate if user exist in our database
     const oldUser = await Users.findOne({ email });
@@ -69,16 +71,26 @@ exports.create = async (req, res) => {
 
     //Encrypt user password
     encryptedPassword = await bcrypt.hash(password, 10);
-
+   
     // Create user in our database
     const user = await Users.create({
       firstName,
       lastName,
       email: email.toLowerCase(), // sanitize: convert email to lowercase
       password: encryptedPassword,
-      status: 1
+      status: true,
+      address: '908 Jack Locks',
+      avatarUrl: 'https://i.stack.imgur.com/l60Hf.png',
+      city: 'Rancho Cordova',
+      company: 'Gleichner, Mueller and Tromp',
+      country: 'Madagascar',     
+      isVerified: false,     
+      phoneNumber: '0000',
+      role: '-',
+      state: '-',     
+      zipCode: '-',
     });
-    user.password=''; 
+   
     console.log(user);
     if(user._id){ 
 
@@ -94,10 +106,10 @@ exports.create = async (req, res) => {
       
       
       user1.password='';
-      user1.displayName='TT';
+      user1.displayName=user1.firstName+' '+user1.lastName;
       user1.role = 'admin';
       user1.accessToken = token;
-      user1.photoURL='https://i.stack.imgur.com/l60Hf.png';
+      user1.photoURL=user1.avatarUrl;
       res.status(200).send({
         status: 'succes',
         msg: 'valid',
@@ -148,10 +160,10 @@ exports.login = async (req, res) => {
       
       
       user1.password='';
-      user1.displayName='TT';
+      user1.displayName=user1.firstName+' '+user1.lastName;
       user1.role = 'admin';
       user1.accessToken = token;
-      user1.photoURL='https://i.stack.imgur.com/l60Hf.png';
+      user1.photoURL=user1.avatarUrl;
       res.status(200).send({
         status: 'succes',
         msg: 'valid',
@@ -185,15 +197,23 @@ exports.findAll = (req, res) => {
     condition = req.body.name ? { name: { $regex: new RegExp(req.body.name), $options: "i" } } : {};
   }
 
-
-  Users.find(condition)
+  // Users.find(condition)
+  Users.find()
     .then(data => {
-      res.send(data);
+     
+      res.status(200).send({
+        status: 'succes',
+        msg: 'valid',
+        data: data,
+      
+      });
+
+
     })
     .catch(err => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving tutorials."
+        status: 'error',
+        msg:  err.message || "Some error occurred while retrieving users."       
       });
     });
 };

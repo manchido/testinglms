@@ -3,12 +3,20 @@ module.exports = mongoose => {
       {
         username: String,
         email: String,
-        firstname: String,
-        lastname: String,
+        firstName: String,
+        lastName: String,
         password: String,
-        phone:String,
+        phoneNumber:String,
         role:String,
-        status:Boolean
+        status:Boolean,        
+        address: String,
+        avatarUrl: String,
+        city: String,
+        company: String,
+        country: String ,   
+        isVerified: Boolean,       
+        state: String,     
+        zipCode:String,
       },
       { timestamps: true }
     );

@@ -29,17 +29,26 @@ const isValidToken = (accessToken) => {
 //   }, timeLeft);
 // };
 
-const setSession = (accessToken) => {
-  if (accessToken) {
-    localStorage.setItem('accessToken', accessToken);
+const setSession = (key,value) => {
+  if (value) {
+    localStorage.setItem(key, value);
     // axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
     // This function below will handle when token is expired
     // const { exp } = jwtDecode(accessToken);
     // handleTokenExpired(exp);
   } else {
-    localStorage.removeItem('accessToken');
+    localStorage.removeItem(key);
     // delete axios.defaults.headers.common.Authorization;
   }
 };
 
-export { isValidToken, setSession, verify, sign };
+const removeSession = (key) => {
+  localStorage.removeItem(key);
+};
+
+const getSession = (key) => {
+  const res = localStorage.getItem(key) || null;
+  return res;
+}
+
+export { isValidToken, setSession, removeSession, getSession, verify, sign };

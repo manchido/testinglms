@@ -2,6 +2,7 @@ import { map, filter } from 'lodash';
 import { createSlice } from '@reduxjs/toolkit';
 // utils
 import axios from '../../utils/axios';
+import http from '../../utils/http-common';
 
 // ----------------------------------------------------------------------
 
@@ -209,8 +210,16 @@ export function getUserList() {
   return async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await axios.get('/api/user/manage-users');
-      dispatch(slice.actions.getUserListSuccess(response.data.users));
+      
+      http.post(`${process.env.REACT_APP_API_URL}/api/users/getall`).then(response => {
+        // console.log(response); 
+        if (response.data.msg === 'valid') {  
+          dispatch(slice.actions.getUserListSuccess(response.data.data));        
+        }
+        else {  
+          dispatch(slice.actions.hasError(response.data.msg))
+       }
+      });      
     } catch (error) {
       dispatch(slice.actions.hasError(error));
     }

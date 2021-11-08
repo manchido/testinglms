@@ -148,7 +148,7 @@ export default function UserList() {
   const isUserNotFound = filteredUsers.length === 0;
 
   return (
-    <Page title="User: List | Minimal-UI">
+    <Page title="User: List | Nudge">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
           heading="User List"
@@ -186,8 +186,8 @@ export default function UserList() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, role, status, company, avatarUrl, isVerified } = row;
-                    const isItemSelected = selected.indexOf(name) !== -1;
+                    const { id, firstName, role, status, company, avatarUrl, isVerified } = row;
+                    const isItemSelected = selected.indexOf(firstName) !== -1;
 
                     return (
                       <TableRow
@@ -199,13 +199,13 @@ export default function UserList() {
                         aria-checked={isItemSelected}
                       >
                         <TableCell padding="checkbox">
-                          <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, name)} />
+                          <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, firstName)} />
                         </TableCell>
                         <TableCell component="th" scope="row" padding="none">
                           <Stack direction="row" alignItems="center" spacing={2}>
-                            <Avatar alt={name} src={avatarUrl} />
+                            <Avatar alt={firstName} src={avatarUrl} />
                             <Typography variant="subtitle2" noWrap>
-                              {name}
+                              {firstName}
                             </Typography>
                           </Stack>
                         </TableCell>
@@ -215,14 +215,14 @@ export default function UserList() {
                         <TableCell align="left">
                           <Label
                             variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-                            color={(status === 'banned' && 'error') || 'success'}
+                            color={(status === true && 'success') || 'error'}
                           >
-                            {sentenceCase(status)}
+                            {(status === true && 'Active') || 'Banned'}
                           </Label>
                         </TableCell>
 
                         <TableCell align="right">
-                          <UserMoreMenu onDelete={() => handleDeleteUser(id)} userName={name} />
+                         <UserMoreMenu onDelete={() => handleDeleteUser(id)} userName={firstName} /> 
                         </TableCell>
                       </TableRow>
                     );

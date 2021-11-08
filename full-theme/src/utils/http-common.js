@@ -1,6 +1,7 @@
 import axios from "axios";
 import jwt from "jsonwebtoken";
-import { setUserSession, removeUserSession, getToken } from "./Common";
+import { useNavigate } from 'react-router-dom';
+import {  setSession, removeSession, getSession } from './jwt';
 
 const instance = axios.create({
 	baseURL: process.env.REACT_APP_API_URL,
@@ -8,9 +9,6 @@ const instance = axios.create({
 		"Content-type": "application/json",
 	}
 });
-
-
-
 
 instance.interceptors.response.use(
 	/* (res) => {
@@ -28,13 +26,15 @@ instance.interceptors.response.use(
 	(res) => res,
 	(error) => {
 		console.log(error.response);
+		const navigate = useNavigate();
 		// const originalConfig = error.config;
 		const status = error.response ? error.response.status : null;
 		console.log(status);
 		if (status === 401) {
 
-			removeUserSession('api_token');
-			refresh();
+			removeSession('accessToken');
+			navigate('/', { replace: true });
+			// refresh();
 			// originalConfig.headers.common['x-access-token'] = getToken();
 			// return instance.request(originalConfig);
 			// window.location.reload();
@@ -64,7 +64,7 @@ instance.interceptors.response.use(
 instance.interceptors.request.use(config => {
 
 	
-	config.headers.common['x-access-token'] = getToken();
+	config.headers.common['x-access-token'] = getSession('accessToken');
 	return config;
 
 });
@@ -72,13 +72,13 @@ instance.interceptors.request.use(config => {
 
 
 function check_token_expire(token) {
-
-	console.log('exp : ', token);
+	// console.log('exp : ', token);
+	
 	const decodedToken = jwt.decode(token, { complete: true });
 	const dateNow = new Date();
 	if (decodedToken.exp < dateNow.getTime()) {
-		removeUserSession('api_token');
-		return refresh();
+		removeSession('accessToken');
+		// history.push("/");
 	}
 	return token;
 
@@ -89,13 +89,14 @@ function check_token_expire(token) {
 
 function refresh() {
 	return new Promise((resolve, reject) => {
-		const token = getToken();
+		const token = getSession('accessToken');
 
 		if (token === '' || token === null || token === 'null' || token === 'undefined' || token === undefined) {
 
 			const login_data = { email: "udgeapi@gmail.com", password: "Nud@g#126" };
 			instance.post(`${process.env.REACT_APP_API_URL}/api/token`, login_data).then((response) => {
-				setUserSession('api_token', response.data.token);
+				
+				setSession('accessToken',response.data.token);
 				return resolve(response);
 			}).catch((error) => {
 				return reject(error);

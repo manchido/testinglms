@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSnackbar } from 'notistack5';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useFormik, Form, FormikProvider } from 'formik';
@@ -55,8 +55,20 @@ export default function LoginForm() {
     validationSchema: LoginSchema,
     onSubmit: async (values, { setErrors, setSubmitting, resetForm }) => {
       try {
-        console.log(values.password);
-        await login(values.email, values.password);
+        // console.log(values.password);
+       
+        
+
+        return new Promise((resolve, reject) => {
+
+          login(values.email, values.password).then((res) => {
+            console.log(resolve(res));
+          });
+          
+        });
+      
+
+       
 
            
 
@@ -69,9 +81,7 @@ export default function LoginForm() {
             </MIconButton>
           )
         }); */
-        if (isMountedRef.current) {
-          setSubmitting(false);
-        }
+        
       } catch (error) {
         console.error(error);
         resetForm();
@@ -88,6 +98,11 @@ export default function LoginForm() {
   const handleShowPassword = () => {
     setShowPassword((show) => !show);
   };
+
+  // If you're curious, you can run this Effect
+  useEffect(() => {
+    console.log({formik});
+  }, [])
 
   return (
     <FormikProvider value={formik}>

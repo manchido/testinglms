@@ -1,10 +1,11 @@
-import { createContext, useEffect, useReducer , useState } from 'react';
+import { createContext, useEffect, useReducer, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 // utils
 import axios from '../utils/axios';
-import { isValidToken, setSession } from '../utils/jwt';
+import { isValidToken, setSession, removeSession } from '../utils/jwt';
 import http from "../utils/http-common";
+
 
 
 // ----------------------------------------------------------------------
@@ -66,7 +67,7 @@ AuthProvider.propTypes = {
 
 function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -75,7 +76,7 @@ function AuthProvider({ children }) {
         const accessToken = window.localStorage.getItem('accessToken');
 
         if (accessToken && isValidToken(accessToken)) {
-          setSession(accessToken);
+          setSession('accessToken', accessToken);
 
           const response = await axios.get('/api/account/my-account');
           const { user } = response.data;
@@ -112,65 +113,68 @@ function AuthProvider({ children }) {
   }, []);
 
   const login = async (email, password) => {
-   
-    
+
+
     http.post(`${process.env.REACT_APP_API_URL}/api/users/login`, { email, password }).then(response => {
-      // console.log(response); 
+      console.log(response); 
       if (response.data.msg === 'valid') {
 
-      // console.log(response.data.data.accessToken);
-      const { accessToken } = response.data.data.accessToken;
-      const user = response.data.data;
-
-      setSession(accessToken);
-      dispatch({
-        type: 'LOGIN',
-        payload: {
-          user
-        }
-      });
-      navigate('/dashboard/app', { replace: true });
-    }
-    else {
-
-      setError("username or password incorrect.");
-    }
-  });
+        console.log(response.data.data.accessToken);
+        const accessToken1  = response.data.data.accessToken;
+        const user = response.data.data;
+        console.log(accessToken1);
+        setSession('accessToken', accessToken1);
+        dispatch({
+          type: 'LOGIN',
+          payload: {
+            user
+          }
+        });
+        navigate('/dashboard/app', { replace: true });
+      }
+      else {
+        return response.data;      
+       
+      }
+    });
 
   };
 
   const register = async (email, password, firstName, lastName) => {
-    
 
-    http.post(`${process.env.REACT_APP_API_URL}/api/users/create`, { email,password,firstName,
-      lastName }).then(response => {
+
+    http.post(`${process.env.REACT_APP_API_URL}/api/users/create`, {
+      email, password, firstName,
+      lastName
+    }).then(response => {
       // console.log(response); 
       if (response.data.msg === 'valid') {
 
-      // console.log(response.data.data.accessToken);
-      const { accessToken } = response.data.data.accessToken;
-      const user = response.data.data;
-      window.localStorage.setItem('accessToken', accessToken);
-      setSession(accessToken);
-      dispatch({
-        type: 'REGISTER',
-        payload: {
-          user
-        }
-      });
-      navigate('/dashboard/app', { replace: true });
-    }
-    else {
+        // console.log(response.data.data.accessToken);
+        const { accessToken } = response.data.data.accessToken;
+        const user = response.data.data;
 
-      setError("username or password incorrect.");
-    }
-  });
+        setSession('accessToken', accessToken);
+        dispatch({
+          type: 'REGISTER',
+          payload: {
+            user
+          }
+        });
+        navigate('/dashboard/app', { replace: true });
+      }
+      else {
+
+        setError("username or password incorrect.");
+      }
+    });
 
 
-   
+
   };
 
   const logout = async () => {
+    removeSession('accessToken');
     setSession(null);
     dispatch({ type: 'LOGOUT' });
   };

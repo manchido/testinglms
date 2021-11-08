@@ -49,7 +49,8 @@ export default function Login() {
 
   const handleLoginAuth0 = async () => {
     try {
-      await login();
+      const res = await login();
+      console.log(res);
     } catch (error) {
       console.error(error);
     }
