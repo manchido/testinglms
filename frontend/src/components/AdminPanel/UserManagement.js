@@ -1,22 +1,18 @@
 import React, { useEffect,useState } from 'react';
-import { render } from 'react-dom';
 import { AgGridReact, AgGridColumn } from 'ag-grid-react';
-import 'ag-grid-enterprise';
+
 import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
-
-
+import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 const UserManagement = () => {
     const [rowData, setRowData] = useState("");
+    const [userData, setUserData] = useState([])
 
-    useEffect(()=>{
-        let res = getUser();
-        setRowData(res);
-    }, [])
+    useEffect(() => {
+        getUser()
+    },[])
 
     const getUser = async () =>{
-
         const localUrl = "http://localhost:8001"
         const url = localUrl + '/api/users/getall'
         const requestOptions = {
@@ -29,8 +25,7 @@ const UserManagement = () => {
         const data = await response.json();
         if(data.status === "success") {
             console.log(data.data);
-            return data.data;
-            
+            setUserData(data.data)
         }
         else if(data.status === "error") {
             console.log("No record");
@@ -42,7 +37,7 @@ const UserManagement = () => {
     return (
         <div className="ag-theme-alpine" style={{height: 400, width: 600}}>
             <AgGridReact
-                rowData={rowData}>
+                rowData={userData}>
                 <AgGridColumn field="email"></AgGridColumn>
                 <AgGridColumn field="firstName"></AgGridColumn>
                 <AgGridColumn field="id"></AgGridColumn>
