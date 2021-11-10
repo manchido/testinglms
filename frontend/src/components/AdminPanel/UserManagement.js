@@ -34,7 +34,7 @@ const UserManagement = () => {
 
     
     return (
-        <div className="ag-theme-alpine" style={{height: 400, width: "100%"}}>
+        <div className="ag-theme-alpine" style={{height: 400, width: "100%", marginTop: "10px"}}>
             <AgGridReact
                 rowData={allUserData}>
                 <AgGridColumn field="email"></AgGridColumn>

@@ -31,3 +31,12 @@
 .blue-400 {
   color: rgb(0, 0, 182);
 }
+
+.nav-link {
+  color: black;
+  border: whitesmoke 1px solid;
+}
+
+.nav-link:hover {
+  background-color: whitesmoke;
+}
