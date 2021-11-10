@@ -5,14 +5,13 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 const UserManagement = () => {
-    const [rowData, setRowData] = useState("");
-    const [userData, setUserData] = useState([])
+    const [allUserData, setAllUserData] = useState([])
 
     useEffect(() => {
-        getUser()
+        getAllUser()
     },[])
 
-    const getUser = async () =>{
+    const getAllUser = async () =>{
         const localUrl = "http://localhost:8001"
         const url = localUrl + '/api/users/getall'
         const requestOptions = {
@@ -25,7 +24,7 @@ const UserManagement = () => {
         const data = await response.json();
         if(data.status === "success") {
             console.log(data.data);
-            setUserData(data.data)
+            setAllUserData(data.data)
         }
         else if(data.status === "error") {
             console.log("No record");
@@ -35,9 +34,9 @@ const UserManagement = () => {
 
     
     return (
-        <div className="ag-theme-alpine" style={{height: 400, width: 600}}>
+        <div className="ag-theme-alpine" style={{height: 400, width: "100%"}}>
             <AgGridReact
-                rowData={userData}>
+                rowData={allUserData}>
                 <AgGridColumn field="email"></AgGridColumn>
                 <AgGridColumn field="firstName"></AgGridColumn>
                 <AgGridColumn field="id"></AgGridColumn>
