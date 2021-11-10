@@ -111,7 +111,7 @@ exports.create = async (req, res) => {
       user1.accessToken = token;
       user1.photoURL=user1.avatarUrl;
       res.status(200).send({
-        status: 'succes',
+        status: 'success',
         msg: 'valid',
         data: user1,
       
@@ -165,7 +165,7 @@ exports.login = async (req, res) => {
       user1.accessToken = token;
       user1.photoURL=user1.avatarUrl;
       res.status(200).send({
-        status: 'succes',
+        status: 'success',
         msg: 'valid',
         data: user1,
       
@@ -202,7 +202,7 @@ exports.findAll = (req, res) => {
     .then(data => {
      
       res.status(200).send({
-        status: 'succes',
+        status: 'success',
         msg: 'valid',
         data: data,
       
@@ -251,7 +251,7 @@ exports.update = (req, res) => {
         res.status(404).send({
           message: `Cannot update Users with id=${id}. Maybe User was not found!`
         });
-      } else res.send({ message: "User was updated successfully." });
+      } else res.send({ message: "User was updated successsfully." });
     })
     .catch(err => {
       res.status(500).send({
@@ -272,7 +272,7 @@ exports.delete = (req, res) => {
         });
       } else {
         res.send({
-          message: "Users was deleted successfully!"
+          message: "Users was deleted successsfully!"
         });
       }
     })
@@ -288,7 +288,7 @@ exports.deleteAll = (req, res) => {
   Users.deleteMany({})
     .then(data => {
       res.send({
-        message: `${data.deletedCount} Users were deleted successfully!`
+        message: `${data.deletedCount} Users were deleted successsfully!`
       });
     })
     .catch(err => {
