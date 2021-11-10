@@ -15,6 +15,7 @@ const Register = ({history}) => {
     const [loginError, setLoginError] = useState("")
     
     const baseUrl =  window.location.href.split(window.location.pathname)[0];
+    const serverUrl = "http://172.105.51.160"
     const localUrl = "http://localhost:8001"
 
     const Login = async () => {
@@ -40,7 +41,7 @@ const Register = ({history}) => {
                 setLoginError(data.msg)
                 setTimeout(()=>{
                     window.location.href = "home"
-                }, 3000)
+                }, 100)
             }
             else if(data.status === "error") {
                 setLoginError(data.msg)

@@ -10,6 +10,7 @@ const Landing = ({history}) => {
     const [loginError, setLoginError] = useState("")
     
     const baseUrl =  window.location.href.split(window.location.pathname)[0];
+    const serverUrl = "http://172.105.51.160"
     const localUrl = "http://localhost:8001"
 
     const Login = async () => {
@@ -32,9 +33,9 @@ const Landing = ({history}) => {
                 setLoginError(data.msg)
                 localStorage.setItem("nudgeToken",data.data.accessToken)
                 localStorage.setItem("_id_",data.data.id)
-                // window.location.href = "home"
+                window.location.href = "home"
             }
-            else if(data.status === "error") {
+            else if(data.status === "invalid") {
                 setLoginError(data.msg)
             }        
         }
@@ -79,6 +80,9 @@ const Landing = ({history}) => {
         <div>
             <Container className="d-flex flex-wrap justify-content-center align-items-center">
                 <Card className="mt-5 px-4 py-4 col-12 col-md-8 col-lg-6 rd-10">
+                    <div className="d-flex col-12 justify-content-center">
+                        {/* <img style={{width: "200px"}} className="p-3" src="https://giveitanudge.com/wp-content/themes/website4.0/assets/img/logos/ndg-logo--dark.svg" alt="nudge" /> */}
+                    </div>
                     <CardTitle tag="h3" className="bold">
                         Login
                     </CardTitle>

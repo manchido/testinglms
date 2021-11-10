@@ -4,7 +4,7 @@ import { AgGridReact, AgGridColumn } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
-const UserManagement = () => {
+const StudentManagement = () => {
     const [rowData, setRowData] = useState("");   
     const pagination = true;
     const paginationPageSize = 10;
@@ -14,7 +14,7 @@ const UserManagement = () => {
     const serverUrl = "http://172.105.51.160"
     
     useEffect(() => {
-        getAllUser()
+        // getAllUser()
     },[])
 
     const getAllUser = async () =>{
@@ -42,8 +42,8 @@ const UserManagement = () => {
             <div className="ag-theme-alpine" style={{height: 400, width: "100%", marginTop: 10}}>
                 <AgGridReact pagination={pagination} paginationPageSize={paginationPageSize}
                     rowData={allUserData}>
-                    <AgGridColumn field="email"  filter={true}></AgGridColumn>
-                    <AgGridColumn field="firstName"></AgGridColumn>
+                    <AgGridColumn field="name"  filter={true}></AgGridColumn>
+                    <AgGridColumn field="courses"></AgGridColumn>
                     <AgGridColumn field="id"></AgGridColumn>
                 </AgGridReact>
             </div>
@@ -54,4 +54,4 @@ const UserManagement = () => {
     );
 }
 
-export default UserManagement
+export default StudentManagement

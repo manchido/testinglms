@@ -10,9 +10,12 @@ const ParentMain = () => {
     const [sideNavHover, setSideNavHover] = useState(false)
     const [sideNavWidth, setNavWidth] = useState(1)
     const [isAdmin, setIsAdmin] = useState(true)
-    const [isInstructor, setInstructor] = useState(false)
+    const [isInstructor, setInstructor] = useState(true)
     const [isStudent, setIsStudent] = useState(true)
     const [userDetails, setUserDetails] = useState(true)
+    
+    const localUrl = "http://localhost:8001"
+    const serverUrl = "http://172.105.51.160"
 
     useEffect(() => {
         getUserDetails()
@@ -21,7 +24,6 @@ const ParentMain = () => {
     const getUserDetails = async () =>{
         const nudgeToken = localStorage.getItem("nudgeToken")
         const id = localStorage.getItem("_id_")
-        const localUrl = "http://localhost:8001"
         const url = localUrl + '/api/users/getone'
         const requestOptions = {
             method: 'POST',
@@ -29,7 +31,8 @@ const ParentMain = () => {
                 'Content-Type': 'application/json',
                 'x-access-token': nudgeToken
             },
-            body: JSON.stringify({id: id})
+            body: JSON.stringify({id: id}),
+            Referer: "http://172.105.51.160/"
         }
         const response = await fetch(url, requestOptions)
         const data = await response.json();
@@ -55,7 +58,7 @@ const ParentMain = () => {
                     <SideNav/>   
                 </Suspense> 
             </div>
-            <div className={`col-`+Number(12-sideNavWidth)} style={{minHeight: '100vh', marginTop: 30}}>
+            <div className={`col-`+Number(12-sideNavWidth)} style={{minHeight: '95vh', marginTop: 30}}>
                 <Suspense fallback={<div></div>}>
                     {isAdmin && <AdminPanel />}
                     {isInstructor && <InstructorPanel />}
