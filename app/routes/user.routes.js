@@ -9,6 +9,7 @@ module.exports = app => {
   
     // Retrieve all Tutorials
     router.post("/getall",auth, users.findAll);
+    router.post("/getone",auth, users.findOne);
   
     // Retrieve all published Tutorials
     router.post("/findbyname",auth, users.findByName);

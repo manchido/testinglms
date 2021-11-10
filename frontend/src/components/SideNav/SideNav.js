@@ -8,7 +8,7 @@ const SideNav = () => {
     
     return(
         <div>
-            <Nav vertical className="border flex-nowrap" style={{minHeight: "100vh"}}>
+            <Nav vertical className="border-end flex-nowrap" style={{minHeight: "100vh"}}>
                 <img style={{width: "120px"}} className="p-3" src="https://giveitanudge.com/wp-content/themes/website4.0/assets/img/logos/ndg-logo--dark.svg" alt="nudge" />
                 {isAdmin && 
                     <div>

@@ -28,10 +28,11 @@ const Landing = ({history}) => {
             const response = await fetch(url, requestOptions)
             const data = await response.json()
             if(data.status === "success") {
+                console.log(data)
                 setLoginError(data.msg)
-                setTimeout(()=>{
-                    window.location.href = "home"
-                }, 3000)
+                localStorage.setItem("nudgeToken",data.data.accessToken)
+                localStorage.setItem("_id_",data.data.id)
+                // window.location.href = "home"
             }
             else if(data.status === "error") {
                 setLoginError(data.msg)
