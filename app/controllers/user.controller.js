@@ -198,7 +198,7 @@ exports.findAll = (req, res) => {
   }
 
   // Users.find(condition)
-  Users.find()
+  Users.find().select({_id: 1,  email: 1,firstName:1})
     .then(data => {
      
       res.status(200).send({

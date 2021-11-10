@@ -10,9 +10,15 @@ const SideNav = () => {
         <div>
             <Nav vertical>
                 {isAdmin && 
+                    <div>
                     <NavLink href="#">
                         Admin Panel
                     </NavLink>
+
+                    <NavLink href="usermanagement">
+                    UserManagement
+                    </NavLink>
+                    </div>
                 }
                 {isInstructor && 
                     <NavLink href="#">
