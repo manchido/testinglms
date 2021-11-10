@@ -1,12 +1,15 @@
 import React, { useEffect,useState } from 'react';
 import { AgGridReact, AgGridColumn } from 'ag-grid-react';
+import SideNav from "../SideNav/SideNav"
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 const UserManagement = () => {
     const [rowData, setRowData] = useState("");
-    const [userData, setUserData] = useState([])
+    const [userData, setUserData] = useState([]);
+    const pagination = true;
+    const paginationPageSize = 10;
 
     useEffect(() => {
         getUser()
@@ -35,14 +38,23 @@ const UserManagement = () => {
 
     
     return (
-        <div className="ag-theme-alpine" style={{height: 400, width: 600}}>
-            <AgGridReact
-                rowData={userData}>
-                <AgGridColumn field="email"></AgGridColumn>
-                <AgGridColumn field="firstName"></AgGridColumn>
-                <AgGridColumn field="id"></AgGridColumn>
-            </AgGridReact>
+        <div className="d-flex col-12">
+            <div className="col-2">
+                <SideNav/>
+            </div>
+            <div className="col-8">
+                <div className="ag-theme-alpine" style={{height: 400, width: 600}}>
+                <AgGridReact pagination={pagination} paginationPageSize={paginationPageSize}
+                    rowData={userData}>
+                    <AgGridColumn field="email"  filter={true}></AgGridColumn>
+                    <AgGridColumn field="firstName"></AgGridColumn>
+                    <AgGridColumn field="id"></AgGridColumn>
+                </AgGridReact>
+            </div>
+            </div>
         </div>
+        
+        
     );
 }
 
