@@ -38,6 +38,7 @@ const UserManagement = () => {
 
     
     return (
+
         <div className="d-flex col-12">
             <div className="col-2">
                 <SideNav/>
@@ -55,6 +56,7 @@ const UserManagement = () => {
         
         
         
+
     );
 }
 
