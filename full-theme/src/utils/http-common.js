@@ -26,19 +26,18 @@ instance.interceptors.response.use(
 	(res) => res,
 	(error) => {
 		console.log(error.response);
-		const navigate = useNavigate();
-		// const originalConfig = error.config;
-		const status = error.response ? error.response.status : null;
-		console.log(status);
-		if (status === 401) {
-
+			
+		const status = error.response ? error.response.status : null;		
+		console.log('sts:',status);
+		if (status === 401) {	
+			const navigate = useNavigate();			
 			removeSession('accessToken');
 			navigate('/', { replace: true });
 			// refresh();
-			// originalConfig.headers.common['x-access-token'] = getToken();
-			// return instance.request(originalConfig);
-			// window.location.reload();
-
+		}
+		if (status === 400) {
+			
+			return Promise.reject(error.response.data.msg);
 		}
 
 

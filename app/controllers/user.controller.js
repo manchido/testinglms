@@ -171,8 +171,8 @@ exports.login = async (req, res) => {
       
       });
     }else{
-      res.status(200).send({
-        status: 'error',
+      res.status(400).send({
+        status: 'invalid',
         msg: 'Please enter valid username and password',          
       });
     }
