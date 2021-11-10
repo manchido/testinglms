@@ -56,23 +56,8 @@ export default function LoginForm() {
     onSubmit: async (values, { setErrors, setSubmitting, resetForm }) => {
       try {
         // console.log(values.password);
-       
-        
-
-        return new Promise((resolve, reject) => {
-
-          login(values.email, values.password).then((res) => {
-            console.log(resolve(res));
-          });
+          await login(values.email, values.password);
           
-        });
-      
-
-       
-
-           
-
-
         /* enqueueSnackbar('Login success', {
           variant: 'success',
           action: (key) => (

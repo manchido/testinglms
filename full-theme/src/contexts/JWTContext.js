@@ -1,10 +1,12 @@
 import { createContext, useEffect, useReducer, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import {  Alert } from '@material-ui/core';
 // utils
 import axios from '../utils/axios';
 import { isValidToken, setSession, removeSession } from '../utils/jwt';
 import http from "../utils/http-common";
+
 
 
 
@@ -69,6 +71,7 @@ function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const navigate = useNavigate();
   const [error, setError] = useState(null);
+  const [showAlert, setShowAlert] = useState(null);
 
   useEffect(() => {
     const initialize = async () => {
@@ -133,9 +136,18 @@ function AuthProvider({ children }) {
         navigate('/dashboard/app', { replace: true });
       }
       else {
-        return response.data;      
+        console.log('res:',response.data);
+        // return response.data;
+        return [400, { message: 'There is no user corresponding to the email address.' }];      
        
       }
+    }).catch(error =>{
+      console.log('error:',error);
+      setShowAlert(error.data);
+      alert(error);
+      setError({ afterSubmit: error.message });
+      
+
     });
 
   };
@@ -184,6 +196,7 @@ function AuthProvider({ children }) {
   const updateProfile = () => { };
 
   return (
+   
     <AuthContext.Provider
       value={{
         ...state,
@@ -196,7 +209,9 @@ function AuthProvider({ children }) {
       }}
     >
       {children}
+    
     </AuthContext.Provider>
+     
   );
 }
 

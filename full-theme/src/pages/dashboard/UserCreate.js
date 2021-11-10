@@ -21,24 +21,24 @@ export default function UserCreate() {
   const { themeStretch } = useSettings();
   const dispatch = useDispatch();
   const { pathname } = useLocation();
-  const { name } = useParams();
+  const { id } = useParams();
   const { userList } = useSelector((state) => state.user);
   const isEdit = pathname.includes('edit');
-  const currentUser = userList.find((user) => paramCase(user.name) === name);
+  const currentUser = userList.find((user) => paramCase(user.id) === id);
 
   useEffect(() => {
     dispatch(getUserList());
   }, [dispatch]);
 
   return (
-    <Page title="User: Create a new user | Minimal-UI">
+    <Page title="User: Create a new user | Nudge">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
           heading={!isEdit ? 'Create a new user' : 'Edit user'}
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             { name: 'User', href: PATH_DASHBOARD.user.root },
-            { name: !isEdit ? 'New user' : name }
+            { name: !isEdit ? 'New user' : id }
           ]}
         />
 
