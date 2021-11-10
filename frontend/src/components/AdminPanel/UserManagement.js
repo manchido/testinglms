@@ -39,11 +39,7 @@ const UserManagement = () => {
     
     return (
 
-        <div className="d-flex col-12">
-            <div className="col-2">
-                <SideNav/>
-            </div>
-            <div className="col-8">
+        
                 <div className="ag-theme-alpine" style={{height: 400, width: 600}}>
                 <AgGridReact pagination={pagination} paginationPageSize={paginationPageSize}
                     rowData={allUserData}>
@@ -52,8 +48,7 @@ const UserManagement = () => {
                     <AgGridColumn field="id"></AgGridColumn>
                 </AgGridReact>
             </div>
-            </div></div>
-        
+            
         
         
 
