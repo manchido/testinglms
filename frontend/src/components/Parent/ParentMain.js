@@ -24,7 +24,7 @@ const ParentMain = () => {
     const getUserDetails = async () =>{
         const nudgeToken = localStorage.getItem("nudgeToken")
         const id = localStorage.getItem("_id_")
-        const url = localUrl + '/api/users/getone'
+        const url = `${process.env.REACT_APP_API_URL}/api/users/getone`
         const requestOptions = {
             method: 'POST',
             headers: { 
