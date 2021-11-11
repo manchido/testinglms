@@ -81,3 +81,15 @@ react-crud/yarn-error.log*
 
 react-crud/.eslintcache
 app/config/db.config.js
+
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+frontend/.eslintcache

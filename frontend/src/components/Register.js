@@ -24,7 +24,8 @@ const Register = ({history}) => {
         const acceptFirstName = checkFirstName()
         const acceptLastName = checkLastName()
         if(acceptEmail && acceptPassword && acceptFirstName && acceptLastName) {
-            const url = localUrl + '/api/users/create'
+            const url = `${process.env.REACT_APP_API_URL}/api/users/create`
+            
             const requestOptions = {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

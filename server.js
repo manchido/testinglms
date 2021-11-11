@@ -11,7 +11,7 @@ const Apiusers = db.apiusers;
 const app = express();
 
 var corsOptions = {
-  origin: "http://localhost:3000"
+  origin: process.env.ORGIN,
 };
 
 app.use(cors(corsOptions));
@@ -25,7 +25,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // simple route
 app.get("/api", (req, res) => {
-  res.json({ message: "Welcome to bezkoder application." });
+  res.json({ message: "Welcome to nudge application." });
 });
 
 /* app.post("/api/register", async (req, res) => {
