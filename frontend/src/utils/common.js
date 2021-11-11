@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 
-export const checkTokenStatus = (token)  =>{
+export const getNudgetoken = ()  =>{
 	// console.log('exp : ', token);
+  const token = localStorage.getItem("nudgeToken")
 	if(token){
     const decodedToken = jwt.decode(token, { complete: true });
     const dateNow = new Date();

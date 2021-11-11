@@ -1,6 +1,6 @@
 import React, { useEffect,useState } from 'react';
 import { AgGridReact, AgGridColumn } from 'ag-grid-react';
-import {checkTokenStatus} from '../../utils/common'
+import {getNudgetoken} from '../../utils/common'
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
@@ -19,10 +19,8 @@ const UserManagement = () => {
     },[])
 
     const getAllUser = async () =>{
-        const nudgeToken = localStorage.getItem("nudgeToken")
-        checkTokenStatus(nudgeToken);
+        const nudgeToken = getNudgetoken()        
         const url = `${process.env.REACT_APP_API_URL}/api/users/getall`
-
         
         const requestOptions = {
             method: 'POST',

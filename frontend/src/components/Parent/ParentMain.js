@@ -1,10 +1,12 @@
 import { useState, useEffect, lazy, Suspense } from "react"
+import {getNudgetoken} from '../../utils/common'
 
 const SideNav = lazy(() => import('../SideNav/SideNav'))
 const AdminPanel = lazy(() => import('../AdminPanel/AdminPanel'))
 const InstructorPanel = lazy(() => import('../InstructorPanel/InstructorPanel'))
 const Learn = lazy(() => import('../Learn/Learn'))
 const UserMain = lazy(() => import('../UserPanel/UserMain'))
+
 
 const ParentMain = () => {
     const [sideNavHover, setSideNavHover] = useState(false)
@@ -22,7 +24,8 @@ const ParentMain = () => {
     },[])
 
     const getUserDetails = async () =>{
-        const nudgeToken = localStorage.getItem("nudgeToken")
+   
+        const nudgeToken = getNudgetoken()
         const id = localStorage.getItem("_id_")
         const url = `${process.env.REACT_APP_API_URL}/api/users/getone`
         const requestOptions = {
