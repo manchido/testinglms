@@ -25,7 +25,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // simple route
 app.get("/api", (req, res) => {
-  res.json({ message: "Welcome to nudge application." });
+  res.json({ message: "Welcome to Nudge application." });
 });
 
 /* app.post("/api/register", async (req, res) => {

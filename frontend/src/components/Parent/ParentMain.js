@@ -1,5 +1,5 @@
 import { useState, useEffect, lazy, Suspense } from "react"
-import {getNudgetoken} from '../../utils/common'
+import {getUserDetails} from '../../utils/common'
 
 const SideNav = lazy(() => import('../SideNav/SideNav'))
 const AdminPanel = lazy(() => import('../AdminPanel/AdminPanel'))
@@ -15,39 +15,20 @@ const ParentMain = () => {
     const [isInstructor, setInstructor] = useState(true)
     const [isStudent, setIsStudent] = useState(true)
     const [userDetails, setUserDetails] = useState(true)
+    const loggedUserId = localStorage.getItem("_id_")
     
     const localUrl = "http://localhost:8001"
     const serverUrl = "http://172.105.51.160"
 
     useEffect(() => {
-        getUserDetails()
+        
+        getUserDetails(loggedUserId).then(result =>{
+            setUserDetails(result)
+        })
+        
     },[])
 
-    const getUserDetails = async () =>{
-   
-        const nudgeToken = getNudgetoken()
-        const id = localStorage.getItem("_id_")
-        const url = `${process.env.REACT_APP_API_URL}/api/users/getone`
-        const requestOptions = {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'x-access-token': nudgeToken
-            },
-            body: JSON.stringify({id: id}),
-            Referer: "http://172.105.51.160/"
-        }
-        const response = await fetch(url, requestOptions)
-        const data = await response.json();
-        if(data) {
-            console.log("getUserDetails",data);
-            setUserDetails(data)
-        }
-        else if(data.status === "error") {
-            console.log("No record");
-        }
     
-    };
 
     return (
         <div className="d-flex col-12">
