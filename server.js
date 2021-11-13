@@ -5,10 +5,16 @@ const cors = require("cors");
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const db = require("./app/models");
+const fileUpload = require('express-fileupload');
+const path = require('path')
 
 const Apiusers = db.apiusers;
 
 const app = express();
+app.use(express.static('public')); //to access the files in public folder
+
+app.use("/public", express.static(path.join(__dirname, 'public')));
+app.use(fileUpload());
 
 var corsOptions = {
   origin: process.env.ORGIN,
@@ -17,11 +23,17 @@ var corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
+var corsOptions = {
+  origin: process.env.ORGIN,
+};
+// middle ware
+
+
 // parse requests of content-type - application/json
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }));
+//app.use(bodyParser.urlencoded({ extended: true }));
 
 // simple route
 app.get("/api", (req, res) => {

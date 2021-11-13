@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const db = require("../models");
 const Users = db.users;
 const jwt = require("jsonwebtoken");
+const path = require('path')
 
 /*username: String,
 email: String,
@@ -235,29 +236,75 @@ exports.findOne = (req, res) => {
     });
 };
 
+const fileUpload = async (myFile,filename) => {
+  
+   return new Promise(resolve => {
+    
+    myFile.mv(`./public/profilepic/${filename}`).then(function(result) {
+      resolve('/public/profilepic/'+filename);
+    })  
+   
+    
+  });
+  
+
+
+}
+
 // Update a Tutorial by the id in the request
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
   if (!req.body) {
-    return res.status(400).send({
-      message: "Data to update can not be empty!"
+    return res.status(200).send({
+      status: 'error',
+      msg: 'Input data can not empty'  
     });
   }
 
-  const id = req.params.id;
+  //console.log(req.body);
+  //console.log(req.files);
+  let data = req.body;
+  
+  let filename = '';
+  let filepath = '';
 
-  Users.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+  if (req.files) {
+    const myFile = req.files.avatarFile;
+    filename = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)+path.extname(myFile.name);
+   
+    console.log('ext : ',filename);
+    filepath = await fileUpload(myFile,filename);    
+    filepath = req.protocol+"://"+req.headers.host+filepath;
+  }
+
+  if(filepath !== '')
+  {
+    //data = JSON.parse(JSON.stringify(data));
+    data.avatarUrl = filepath;
+    data.avatarName = filename;
+    //data = JSON.stringify(data);
+  }
+  console.log('data : ',data);  
+  const id = req.body.id;
+  //avatarUrl
+  Users.findByIdAndUpdate(id,data, { useFindAndModify: true })
     .then(data => {
       if (!data) {
-        res.status(404).send({
-          message: `Cannot update Users with id=${id}. Maybe User was not found!`
+        res.status(200).send({
+          status: 'error',
+          msg: `Cannot update Users with id=${id}. Maybe User was not found!`
+         
         });
-      } else res.send({ message: "User was updated successsfully." });
+      } else res.send({ 
+        status: 'success',
+        msg: "User was updated successsfully." 
+      });
     })
     .catch(err => {
-      res.status(500).send({
-        message: "Error updating User with id=" + id
+      res.status(200).send({
+        status: 'error',
+        msg: "Error occured while data upadting.Please try again later" 
       });
-    });
+    }); 
 };
 
 // Delete a Tutorial with the specified id in the request

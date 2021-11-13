@@ -11,6 +11,7 @@ module.exports = mongoose => {
         status:Boolean,        
         address: String,
         avatarUrl: String,
+        avatarName: String,
         city: String,
         company: String,
         country: String ,   

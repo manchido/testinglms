@@ -12,6 +12,9 @@ export default (props) => {
   const [avatarUpload, setAvatarUpload] = useState(false);
   const [existingAvatar, setexistingAvatar] = useState(true);
   const [avatarFile, setAvatarFile] = useState('');
+  const [password, setPassword] = useState('');
+  
+ 
 
   useEffect(() => () => {
     // Make sure to revoke the data uris to avoid memory leaks
@@ -30,20 +33,74 @@ export default (props) => {
 
   };
 
-  const handleLogin = (event,id) => {
+  const handleLogin = async (event) => {
     event.preventDefault()   
-    console.log(event.target.firstName.value)
+    console.log('id ==',event.target.id.value)
     const mailString = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9]+(\.([a-zA-Z0-9]+))+$/
     const email = event.target.email.value
     const firstName = event.target.firstName.value
-    const lastName = event.target.email.value
+    const lastName = event.target.lastName.value
     const phoneNumber = event.target.phoneNumber.value
     const role = event.target.role.value
+    const password = event.target.role.password
+    
+
+    const formData = new FormData();
     
     if(!mailString.test(email)) {
       alert("Please Enter Valid Email ID")
       return false
-    }   
+    }
+    if(firstName === ''){
+      alert("Please Enter Valid First name")
+      return false
+    }
+    if(lastName === ''){
+      alert("Please Enter Valid Last name")
+      return false
+    }
+    if(password === ''){
+      alert("Please Enter Valid password")
+      return false
+    }    
+    if(phoneNumber === ''){
+      alert("Please Enter Valid phone number")
+      return false
+    }
+    if(role === ''){
+      alert("Please select valid Role")
+      return false
+    }
+    if(avatarFile.length){
+      formData.append('avatarFile', avatarFile[0]); 
+    }
+    formData.append('id', event.target.id.value);
+    formData.append('email', email);
+    formData.append('firstName', firstName);
+    formData.append('lastName', lastName);
+    //formData.append('password', password);
+    formData.append('phoneNumber', phoneNumber);
+    formData.append('role', role);
+    
+    
+    const url = `${process.env.REACT_APP_API_URL}/api/users/update`            
+    const requestOptions = {
+        //headers: { 'Content-Type': 'application/json' },  
+        method: 'POST',      
+        body: formData
+    }
+    const response = await fetch(url, requestOptions)
+    const data = await response.json()
+    console.log(data);
+    if(data.status === "success") {
+      alert(data.msg);
+      window.location.reload();
+    }
+    if(data.status === "error") {
+      alert(data.msg);
+      window.location.reload();
+    }
+
   };
 
   const changeAvatar = () =>{
@@ -51,15 +108,20 @@ export default (props) => {
     setexistingAvatar(false);
   }
 
-  const onDrop = (files) =>{
-    if (files.length > 0) {
-      setAvatarFile(files);      
+  const updateFormData = (e) =>{
+    console.log(e.target.name);
+    if(e.target.name === 'password'){
+      setPassword(e.target.value);
+    }else{
+      setEditData({[e.target.name]: e.target.value});
     }
+    
   }
 
+
+
   const handleDrop = (acceptedFiles) =>{
-    console.log('aa: ',acceptedFiles);
-    setAvatarFile(acceptedFiles); 
+    console.log('aa: ',acceptedFiles);    
     setAvatarFile(acceptedFiles.map(file => Object.assign(file, {
       preview: URL.createObjectURL(file)
     })));
@@ -89,7 +151,8 @@ export default (props) => {
         modalTransition={{ timeout: 2000 }}>
         <ModalBody>
 
-          <Form onSubmit={(e) => handleLogin(e,editData.id)} >
+          <Form onSubmit={(e) => handleLogin(e)} >
+          <input type="hidden" name="id" value="id" value={editData.id} />
             <FormGroup>
               <Label for="exampleEmail">
                 Firstname
@@ -99,6 +162,7 @@ export default (props) => {
                 id="firstName"
                 name="firstName"
                 value={editData.firstName}
+                onChange = {(e) => updateFormData(e)}
               />
             </FormGroup>
             <FormGroup>
@@ -110,6 +174,7 @@ export default (props) => {
                 id="lastName"
                 name="lastName"
                 value={editData.lastName}
+                onChange = {(e) => updateFormData(e)}
               />
             </FormGroup>
             <FormGroup>
@@ -122,6 +187,7 @@ export default (props) => {
                 placeholder="with a placeholder"
                 type="email"
                 value={editData.email}
+                onChange = {(e) => updateFormData(e)}
               />
             </FormGroup>
             <FormGroup>
@@ -129,11 +195,12 @@ export default (props) => {
                 Password
               </Label>
               <Input
-                id="examplePassword"
+                id="password"
                 name="password"
                 placeholder="password placeholder"
                 type="password"
-                value={editData.password}
+                value={password}
+                onChange = {(e) => updateFormData(e)}
               />
             </FormGroup>
             <FormGroup>
@@ -141,11 +208,12 @@ export default (props) => {
                 phoneNumber
               </Label>
               <Input
-                id="phonenumber"
-                name="phonenumber"
+                id="phoneNumber"
+                name="phoneNumber"
                 placeholder="phonenumber"
                 type="text"
                 value={editData.phoneNumber}
+                onChange = {(e) => updateFormData(e)}
               />
             </FormGroup>
             <FormGroup>
@@ -156,6 +224,7 @@ export default (props) => {
                 id="role"
                 name="role"
                 type="select"
+                onChange = {(e) => updateFormData(e)}
               >
                 <option value='admin'>
                   Admin
