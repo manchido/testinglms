@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getUserDetails } from '../../utils/common';
+import { getUserDetails,getNudgetoken } from '../../utils/common';
 import Dropzone from "react-dropzone";
 import { Button, Modal, ModalFooter, Form, FormGroup, Label, Input, ModalHeader, ModalBody } from "reactstrap"
 
@@ -37,6 +37,7 @@ export default (props) => {
   }
 
   const handleLogin = async (event) => {
+    const nudgeToken = getNudgetoken()
     event.preventDefault()   
     console.log('id ==',event.target.id.value)
     const mailString = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9]+(\.([a-zA-Z0-9]+))+$/
@@ -88,7 +89,9 @@ export default (props) => {
     
     const url = `${process.env.REACT_APP_API_URL}/api/users/update`            
     const requestOptions = {
-        //headers: { 'Content-Type': 'application/json' },  
+      headers: {        
+        'x-access-token': nudgeToken
+      }, 
         method: 'POST',      
         body: formData
     }
