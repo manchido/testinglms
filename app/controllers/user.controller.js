@@ -48,6 +48,28 @@ exports.create = async (req, res) => {
     // Get user input
     const { firstName, lastName, email, password } = req.body;
 
+
+    let data = req.body;  
+    let filename = '';
+    let filepath = '';
+
+    if (req.files) {
+      const myFile = req.files.avatarFile;
+      filename = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)+path.extname(myFile.name);
+    
+      console.log('ext : ',filename);
+      filepath = await fileUpload(myFile,filename);    
+      filepath = req.protocol+"://"+req.headers.host+filepath;
+    }
+
+    if(filepath !== '')
+    {      
+      data.avatarUrl = filepath;
+      data.avatarName = filename;      
+    }
+
+
+
     // Validate user input
     if (!(email && password && firstName && lastName)) {
       
@@ -69,28 +91,32 @@ exports.create = async (req, res) => {
         msg: 'User Already Exist. Please Login',          
       });
     }
+   
+    data.firstName=firstName;
+    data.lastNamee=lastName;    
+    data.avatarUrl = filepath;
+    data.avatarName = filename;
+    data.email = email.toLowerCase();
+    data.password = await bcrypt.hash(password, 10);
+    data.status= true;
+    data.address= '908 Jack Locks';
+    data.avatarUrl= 'https://i.stack.imgur.com/l60Hf.png';
+    data.city= 'Rancho Cordova';
+    data.company= 'Gleichner, Mueller and Tromp';
+    data.country= 'Madagascar';     
+    data.isVerified= false;     
+    data.phoneNumber= '0000000000';
+    data.role= '-';
+    data.state= '-';    
+    data.zipCode= '-';
 
-    //Encrypt user password
-    encryptedPassword = await bcrypt.hash(password, 10);
+
+
    
     // Create user in our database
-    const user = await Users.create({
-      firstName,
-      lastName,
-      email: email.toLowerCase(), // sanitize: convert email to lowercase
-      password: encryptedPassword,
-      status: true,
-      address: '908 Jack Locks',
-      avatarUrl: 'https://i.stack.imgur.com/l60Hf.png',
-      city: 'Rancho Cordova',
-      company: 'Gleichner, Mueller and Tromp',
-      country: 'Madagascar',     
-      isVerified: false,     
-      phoneNumber: '0000',
-      role: '-',
-      state: '-',     
-      zipCode: '-',
-    });
+    const user = await Users.create(
+      data
+    );
    
     console.log(user);
     if(user._id){ 
@@ -113,7 +139,7 @@ exports.create = async (req, res) => {
       user1.photoURL=user1.avatarUrl;
       res.status(200).send({
         status: 'success',
-        msg: 'valid',
+        msg: 'User created successfully.',
         data: user1,
       
       });
@@ -314,18 +340,22 @@ exports.delete = (req, res) => {
   Users.findByIdAndRemove(id)
     .then(data => {
       if (!data) {
-        res.status(404).send({
-          message: `Cannot delete Users with id=${id}. Maybe Users was not found!`
+        res.send({
+          status: 'success',          
+          msg: `Cannot delete Users with id=${id}. Maybe Users was not found!`
         });
       } else {
         res.send({
-          message: "Users was deleted successsfully!"
+          status: 'success',
+          msg: "User was deleted successsfully." 
+          
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Could not delete Users with id=" + id
+        status: 'success',        
+        msg: "Could not delete Users with id=" + id
       });
     });
 };

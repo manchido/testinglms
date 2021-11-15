@@ -9,13 +9,6 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 
-function editAction(values) {
-    alert('edit :',values);
-}
-
-function deleteAction(values) {
-    alert('delete :',values);
-}
 
 
 const UserManagement = () => {
@@ -36,13 +29,6 @@ const UserManagement = () => {
         return (
             '<Input id="selectid" name="selectid"  type="checkbox" value="' + params.value + '" />'
         )
-    }
-
-    const actionEdiDeletebtn = (params) => {
-
-        return (
-            '<button id="editbtn" name="editbtn" onclick="editAction(\''+ params.value +'\')" >Edit </button>'+
-            '<button id="deletebtn" name="deletebtn" onclick="deleteAction(\''+ params.value +'\')" > Delete </button>')    
     }
 
     const getAllUser = async () => {

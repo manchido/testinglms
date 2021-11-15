@@ -8,12 +8,11 @@ import { Button, Modal, ModalFooter, Form, FormGroup, Label, Input, ModalHeader,
 
 export default (props) => {
   const selectedUserId = props.valueFormatted ? props.valueFormatted : props.value; 
-  const [editData, setEditData] = useState('');
+  const [addNew, setAddNew] = useState(true);
   const [avatarUpload, setAvatarUpload] = useState(false);
   const [existingAvatar, setexistingAvatar] = useState(true);
   const [avatarFile, setAvatarFile] = useState('');
-  const [password, setPassword] = useState('');
-
+  const [password, firstName] = useState('');  
 
   useEffect(() => () => {
     // Make sure to revoke the data uris to avoid memory leaks
@@ -27,13 +26,13 @@ export default (props) => {
     // alert(`${cellValue} medals won!`);
     getUserDetails(selectedUserId).then(result => {
       console.log(result);     
-      setEditData(result);
+      // setEditData(result);
     })
 
   };
 
   const closeModal = () => {
-    setEditData(false);
+     setAddNew(false);
   }
 
   const handleLogin = async (event) => {
@@ -45,7 +44,7 @@ export default (props) => {
     const lastName = event.target.lastName.value
     const phoneNumber = event.target.phoneNumber.value
     const role = event.target.role.value
-    const password = event.target.role.password
+    const password = event.target.password.value
     
 
     const formData = new FormData();
@@ -62,10 +61,7 @@ export default (props) => {
       alert("Please Enter Valid Last name")
       return false
     }
-    if(password === ''){
-      alert("Please Enter Valid password")
-      return false
-    }    
+      
     if(phoneNumber === ''){
       alert("Please Enter Valid phone number")
       return false
@@ -74,19 +70,26 @@ export default (props) => {
       alert("Please select valid Role")
       return false
     }
+
     if(avatarFile.length){
       formData.append('avatarFile', avatarFile[0]); 
-    }
-    formData.append('id', event.target.id.value);
+    }else{
+      alert("Please profile image")
+      return false 
+    }    
+   
     formData.append('email', email);
     formData.append('firstName', firstName);
-    formData.append('lastName', lastName);
-    //formData.append('password', password);
+    formData.append('lastName', lastName);    
     formData.append('phoneNumber', phoneNumber);
-    formData.append('role', role);
+    formData.append('role', role);    
+
+    if(password !== ''){
+      formData.append('password', password);
+    } 
     
     
-    const url = `${process.env.REACT_APP_API_URL}/api/users/update`            
+    const url = `${process.env.REACT_APP_API_URL}/api/users/create`            
     const requestOptions = {
         //headers: { 'Content-Type': 'application/json' },  
         method: 'POST',      
@@ -101,7 +104,7 @@ export default (props) => {
     }
     if(data.status === "error") {
       alert(data.msg);
-      window.location.reload();
+      //window.location.reload();
     }
 
   };
@@ -112,13 +115,8 @@ export default (props) => {
   }
 
   const updateFormData = (e) =>{
-    console.log(e.target.name);
-    if(e.target.name === 'password'){
-      setPassword(e.target.value);
-    }else{
-      setEditData({[e.target.name]: e.target.value});
-    }
-    
+    console.log(e.target.name);    
+    setAddNew({[e.target.name]: e.target.value});  
   }
 
 
@@ -145,21 +143,15 @@ export default (props) => {
   
  
 
-  return (
-    
-    
+  return (  
     <span>
-      {editData && <Modal isOpen={true}
-
-        modalTransition={{ timeout: 2000 }}>
+      { addNew && <Modal isOpen={true}  modalTransition={{ timeout: 2000 }}>
           <ModalHeader close={<button className="close"  onClick={() => closeModal()}>×</button>}>
             Edit User
           </ModalHeader>
           <Form onSubmit={(e) => handleLogin(e)} >
-        <ModalBody>
-
-         
-          <input type="hidden" name="id" value="id" value={editData.id} />
+        <ModalBody>        
+          
             <FormGroup>
               <Label for="exampleEmail">
                 Firstname
@@ -168,7 +160,7 @@ export default (props) => {
                 text
                 id="firstName"
                 name="firstName"
-                value={editData.firstName}
+                value={addNew.firstName}               
                 onChange = {(e) => updateFormData(e)}
               />
             </FormGroup>
@@ -180,7 +172,7 @@ export default (props) => {
                 text
                 id="lastName"
                 name="lastName"
-                value={editData.lastName}
+                value={addNew.lastName}
                 onChange = {(e) => updateFormData(e)}
               />
             </FormGroup>
@@ -191,9 +183,9 @@ export default (props) => {
               <Input
                 id="email"
                 name="email"
-                placeholder="with a placeholder"
+                placeholder="Email"
                 type="email"
-                value={editData.email}
+                value={addNew.email}                
                 onChange = {(e) => updateFormData(e)}
               />
             </FormGroup>
@@ -206,10 +198,10 @@ export default (props) => {
                 name="password"
                 placeholder="password placeholder"
                 type="password"
-                value={password}
+                value={addNew.password} 
                 onChange = {(e) => updateFormData(e)}
               />
-              <span style={{fontSize: '12px',color:'red'}}>If you enter password then select as new password , otherwise maintain old password.</span>
+              
             </FormGroup>
             <FormGroup>
               <Label for="examplePassword">
@@ -220,7 +212,7 @@ export default (props) => {
                 name="phoneNumber"
                 placeholder="phonenumber"
                 type="text"
-                value={editData.phoneNumber}
+                value={addNew.phoneNumber} 
                 onChange = {(e) => updateFormData(e)}
               />
             </FormGroup>
@@ -231,8 +223,8 @@ export default (props) => {
               <Input
                 id="role"
                 name="role"
-                type="select"
-                value={editData.role}
+                type="select" 
+                value={addNew.role}               
                 onChange = {(e) => updateFormData(e)}
               >
                 <option value='admin'>
@@ -250,22 +242,11 @@ export default (props) => {
 
               </Input>
             </FormGroup>
-            { existingAvatar && <FormGroup>
-              
-               <div className="d-flex justify-content-center align-items-center">
-                <img className="me-2 mt-3" src={editData.avatarUrl} alt="avatar" style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover' }} />
-              </div> 
+            
 
-              <div>
-                <Button color="primary" onClick={() => changeAvatar()}>
-                  Change
-                </Button>
-              </div>
-            </FormGroup> }
-
-            { avatarUpload && <FormGroup>
+           <FormGroup>
               <Label for="examplePassword">
-                File Upload
+                Select Profile Image
               </Label>
 
 
@@ -285,14 +266,8 @@ export default (props) => {
 
       {avatarFile && <div>{avatarFile.map((file) => <img style={thumb} src={file.preview} /> )}</div> }
              
-            
-
-              { /* <!--<Input
-                id="avatarUrl"
-                name="avatarUrl"
-                type="file"
-              /> */ }
-            </FormGroup> }
+          
+            </FormGroup> 
 
          </ModalBody>
         <ModalFooter>
@@ -305,8 +280,9 @@ export default (props) => {
     </Form>    
 
 
-      </Modal>}
-      <button onClick={() => buttonClicked()}>Edit</button>
-    </span>
+      </Modal> 
+    }
+    </span>  
+   
   );
 };
