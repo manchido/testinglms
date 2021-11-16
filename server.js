@@ -17,14 +17,14 @@ app.use("/public", express.static(path.join(__dirname, 'public')));
 app.use(fileUpload());
 
 var corsOptions = {
-  origin: 8003,
+  origin: process.env.ORGIN,
 };
 
 app.use(cors(corsOptions));
 app.use(express.json());
 
 var corsOptions = {
-  origin: 8003,
+  origin: process.env.ORGIN,
 };
 // middle ware
 
