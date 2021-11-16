@@ -42,9 +42,11 @@ const CourseManagement = () => {
             <div className="ag-theme-alpine" style={{height: 400, width: "100%", marginTop: 10}}>
                 <AgGridReact pagination={pagination} paginationPageSize={paginationPageSize}
                     rowData={allUserData}>
-                    <AgGridColumn field="modules"  filter={true}></AgGridColumn>
-                    <AgGridColumn field="courses"></AgGridColumn>
-                    <AgGridColumn field="id"></AgGridColumn>
+                    <AgGridColumn field="id"  filter={true}></AgGridColumn>
+                    <AgGridColumn field="category"></AgGridColumn>
+                    <AgGridColumn field="course"></AgGridColumn>
+                    <AgGridColumn field="module"></AgGridColumn>
+                    <AgGridColumn field="moduleMaterials"></AgGridColumn>
                 </AgGridReact>
             </div>
             

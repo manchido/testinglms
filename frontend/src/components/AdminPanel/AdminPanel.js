@@ -9,8 +9,8 @@ const AdminPanel = () => {
    
 
     return(
-        <div className="mt-2 px-4 py-4 col-12">
-            <CardTitle tag="h3" className="bold">
+        <div className="px-4 py-4 col-12 border-bottom ">
+            <CardTitle tag="h2" className="fw-bold">
                 Admin Panel
             </CardTitle>
             <Card className="my-2 px-4 py-4 col-12">
@@ -20,7 +20,7 @@ const AdminPanel = () => {
                     </CardTitle>
                     <Button 
                         size="md" 
-                        className="col-2"
+                        className="col-2 me-2"
                         color="primary"
                         onClick={()=>setAddNewUser(!addNewUser)}
                     >

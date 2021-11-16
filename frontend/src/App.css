@@ -10,6 +10,7 @@
 /* width */
 ::-webkit-scrollbar {
   width: 10px;
+  height: 8px;
 }
 
 /* Track */
@@ -60,6 +61,9 @@
 .nav-link {
   color: black;
   border: whitesmoke 1px solid;
+  height: 60px;
+  display: flex;
+  align-items: center;
 }
 
 .nav-link:hover {
@@ -74,11 +78,20 @@
 .pointer:hover {
   color: black;
 }
+
 .dropzone {
   text-align: center;
   padding: 20px;
   border: 3px dashed #eeeeee;
   background-color: #fafafa;
   color: #bdbdbd;
+}
+
+.main-menu {
+  padding-top: 12vh;
+}
+
+.secondary-menu {
+  padding-top: 35vh;
 }
 
