@@ -8,7 +8,7 @@ module.exports = mongoose => {
         password: String,
         phoneNumber:String,
         role:String,
-        status:Boolean,        
+        status:Number,        
         address: String,
         avatarUrl: String,
         avatarName: String,
@@ -18,6 +18,9 @@ module.exports = mongoose => {
         isVerified: Boolean,       
         state: String,     
         zipCode:String,
+        studentManagement:Boolean,
+        userManagement:Boolean,
+        courseManagement:Boolean,    
       },
       { timestamps: true }
     );

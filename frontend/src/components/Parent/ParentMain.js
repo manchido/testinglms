@@ -31,12 +31,11 @@ const ParentMain = () => {
         })
         
     },[])
-
     
 
     return (
         <div className="d-flex col-12">
-            <div 
+            <div
                 style={{overflow: 'hidden', width:`${sideNavWidth}%`}}
                 onMouseEnter={()=>setNavWidth(12)}
                 onMouseLeave={()=>setNavWidth(5)}

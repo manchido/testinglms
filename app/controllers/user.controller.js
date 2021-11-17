@@ -48,28 +48,6 @@ exports.create = async (req, res) => {
     // Get user input
     const { firstName, lastName, email, password } = req.body;
 
-
-    let data = req.body;  
-    let filename = '';
-    let filepath = '';
-
-    if (req.files) {
-      const myFile = req.files.avatarFile;
-      filename = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)+path.extname(myFile.name);
-    
-      console.log('ext : ',filename);
-      filepath = await fileUpload(myFile,filename);    
-      filepath = req.protocol+"://"+req.headers.host+filepath;
-    }
-
-    if(filepath !== '')
-    {      
-      data.avatarUrl = filepath;
-      data.avatarName = filename;      
-    }
-
-
-
     // Validate user input
     if (!(email && password && firstName && lastName)) {
       
@@ -92,25 +70,74 @@ exports.create = async (req, res) => {
       });
     }
    
+
+    //studentManagement:Boolean,
+        //userManagement:Boolean,
+        // courseManagement:Boolean,  
+
+
+    let data = req.body;  
+    let filename = '';
+    let filepath = '';
+
+    if (req.files) {
+      const myFile = req.files.avatarFile;
+      filename = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)+path.extname(myFile.name);
+    
+      console.log('ext : ',filename);
+      filepath = await fileUpload(myFile,filename);    
+      filepath = req.protocol+"://"+req.headers.host+filepath;
+    }
+
+    if(filepath !== '')
+    {      
+      data.avatarUrl = filepath;
+      data.avatarName = filename;      
+    }
+      
+    
+    if(req.body.studentManagement === 'true'){
+      data.studentManagement=true;
+    }
+    else{
+      data.studentManagement=false;
+    }
+    if(req.body.userManagement === 'true'){
+      data.userManagement=true;
+    }
+    else{
+      data.userManagement=false;
+    }
+    if(req.body.courseManagement === 'true'){
+      data.courseManagement=true;
+    }
+    else{
+      data.courseManagement=false;
+    }
+    if(req.body.fromAdmin.toString() === "true"){      
+      data.role= req.body.role;
+      data.phoneNumber= req.body.phoneNumber; 
+    }
+    else{
+      data.role= '-';
+      data.phoneNumber='-';
+    }
+    
+
     data.firstName=firstName;
     data.lastNamee=lastName;    
     data.avatarUrl = filepath;
     data.avatarName = filename;
     data.email = email.toLowerCase();
     data.password = await bcrypt.hash(password, 10);
-    data.status= true;
-    data.address= '908 Jack Locks';
-    data.avatarUrl= 'https://i.stack.imgur.com/l60Hf.png';
+    data.status= 1;
+    data.address= '908 Jack Locks';    
     data.city= 'Rancho Cordova';
     data.company= 'Gleichner, Mueller and Tromp';
     data.country= 'Madagascar';     
-    data.isVerified= false;     
-    data.phoneNumber= '0000000000';
-    data.role= '-';
+    data.isVerified= false;   
     data.state= '-';    
     data.zipCode= '-';
-
-
 
    
     // Create user in our database
@@ -225,7 +252,7 @@ exports.findAll = (req, res) => {
   }
 
   // Users.find(condition)
-  Users.find().select({_id: 1,  email: 1,firstName:1})
+  Users.find().select({_id: 1,  email: 1,firstName:1,role:1,status:1})
     .then(data => {
      
       res.status(200).send({
