@@ -1,7 +1,8 @@
 import React from 'react';
+import { Button } from 'reactstrap';
 import { getNudgetoken } from '../../utils/common'
 
-export default (props) => {
+const UserDelete = (props) => {
   const selectedUserId = props.valueFormatted ? props.valueFormatted : props.value;
   const nudgeToken = getNudgetoken()
 
@@ -33,7 +34,9 @@ export default (props) => {
 
   return (
     <span>     
-      <button onClick={() => deleteUser()}>Delete</button>
+      <Button color="danger" size="sm" outline={true} className="w-50" onClick={() => deleteUser()}>Delete</Button>
     </span>
   );
 };
+
+export default UserDelete

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Button } from 'reactstrap';
 import { getUserDetails, getNudgetoken } from '../../utils/common';
 
-export default (props) => {
+const UserBan = (props) => {
   const userStatus = props.valueFormatted ? props.valueFormatted : props.value;
   const [ban, Setban] = useState(false);
   const [unban, SetUnban] = useState(false);
@@ -47,9 +48,11 @@ export default (props) => {
 
   return (
     <span>
-      { ban && (<button onClick={() => banUnbanClicked('2')}> Ban </button> ) }
-      { unban && <button onClick={() => banUnbanClicked('1')}> UnBan </button> }      
+      { ban && (<Button color="danger" onClick={() => banUnbanClicked('2')}> Ban </Button> ) }
+      { unban && <Button color="danger" onClick={() => banUnbanClicked('1')}> UnBan </Button> }      
       
     </span>
   );
 };
+
+export default UserBan

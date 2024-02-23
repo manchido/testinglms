@@ -6,7 +6,7 @@ import { Row, Col,Button, Modal, ModalFooter, Form, FormGroup, Label, Input, Mod
 
 
 
-export default (props) => {
+const UserEdit = (props) => {
   const selectedUserId = props.valueFormatted ? props.valueFormatted : props.value;
   const [editData, setEditData] = useState('');
   const [avatarUpload, setAvatarUpload] = useState(false);
@@ -349,8 +349,10 @@ export default (props) => {
 
         </Modal>
       </div>}
-      <button onClick={() => buttonClicked()}>Edit</button>
+      <Button className="w-50" size="sm" outline={false} onClick={() => buttonClicked()}>Edit</Button>
 
     </span>
   );
 };
+
+export default UserEdit

@@ -17,7 +17,7 @@ app.use("/public", express.static(path.join(__dirname, 'public')));
 app.use(fileUpload());
 
 var corsOptions = {
-  origin: process.env.ORGIN,
+  origin: process.env.ORGIN || 8003,
 };
 
 app.use(cors(corsOptions));

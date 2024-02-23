@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { AgGridReact, AgGridColumn } from 'ag-grid-react';
 import { getNudgetoken } from '../../utils/common'
-import { FormGroup, Input } from 'reactstrap'
+import { Button, FormGroup, Input } from 'reactstrap'
 import UserEdit from './UserEdit'
-import UserDelete from './userDelete'
-import userBan from './userBan'
+import UserDelete from './UserDelete'
+import UserBan from './UserBan'
 
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
@@ -21,6 +21,12 @@ const UserManagement = () => {
 
     const localUrl = "http://localhost:8001"
     const serverUrl = "http://172.105.51.160"
+
+    const EditRender = () => {
+        return(
+            <button>Edit</button>
+        )
+    }
 
     useEffect(() => {
         getAllUser()
@@ -63,10 +69,10 @@ const UserManagement = () => {
                     
         };
         if(props.value === 1){
-            return <span><button style={{height: 20, lineHeight: 0.5}} onClick={() => banUnban(2)}  className="btn btn-danger">Ban</button></span>;
+            return <span><Button color="danger" outline={true} size="sm" className="w-50" onClick={() => banUnban(2)}>Ban</Button></span>;
         }
         else{
-            return <span><button style={{height: 20, lineHeight: 0.5}} onClick={() => banUnban(1)}  className="btn btn-info">Unban</button></span>;   
+            return <span><Button color="danger" outline={true} size="sm" className="w-50" onClick={() => banUnban(1)}>Unban</Button></span>;   
         }
     
         
@@ -99,7 +105,7 @@ const UserManagement = () => {
     return (
         <div className="ag-theme-alpine" style={{ height: 400, width: "100%", marginTop: 10 }}>
             <AgGridReact 
-            frameworkComponents={{userBan:userBan, userEdit: UserEdit, userDelete:UserDelete ,childMessageRenderer: ChildMessageRenderer }}
+            frameworkComponents={{UserBan:UserBan, UserEdit: UserEdit, UserDelete:UserDelete ,childMessageRenderer: ChildMessageRenderer }}
             pagination={pagination} paginationPageSize={paginationPageSize}
                 rowData={allUserData}>
                 <AgGridColumn field="id" cellRenderer={selectTableRow}> 
@@ -109,8 +115,8 @@ const UserManagement = () => {
                 <AgGridColumn field="firstName"></AgGridColumn>    
                 <AgGridColumn field="role" filter={true}></AgGridColumn>                 
                 <AgGridColumn  headerName="Ban/Unban" field="status" cellRenderer='childMessageRenderer' colId="params"/>           
-                <AgGridColumn headerName="Edit" field="id" cellRenderer="userEdit" ></AgGridColumn>
-                <AgGridColumn headerName="Delete" field="status" cellRenderer="userDelete" ></AgGridColumn>
+                <AgGridColumn headerName="Edit" field="id" cellRenderer="UserEdit"></AgGridColumn>
+                <AgGridColumn headerName="Delete" field="status" cellRenderer="UserDelete" ></AgGridColumn>
 
             </AgGridReact>
         </div>
