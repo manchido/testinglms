@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { AgGridReact, AgGridColumn } from 'ag-grid-react';
 import { getNudgetoken } from '../../utils/common'
 import { Button, FormGroup, Input } from 'reactstrap'
-import UserEdit from './UserEdit'
-import UserDelete from './UserDelete'
-import UserBan from './UserBan'
+import UserEdit from './UserEdit.js'
+import UserDelete from './UserDelete.js'
+import UserBan from './UserBan.js'
 
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
