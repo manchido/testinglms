@@ -13,35 +13,35 @@ status:Boolean */
 exports.create = async (req, res) => {
   // Validate request
   if (!req.body.lastName) {
-      res.send({
+    res.send({
       status: 'error',
-      msg: 'Lastname can not be empty!',          
+      msg: 'Lastname can not be empty!',
     });
-   
+
   }
   if (!req.body.firstName) {
-    
+
     res.send({
       status: 'error',
-      msg: 'FirstName can not be empty!',          
+      msg: 'FirstName can not be empty!',
     });
-    
+
   }
   if (!req.body.email) {
- 
+
     res.send({
       status: 'error',
-      msg: 'Email can not be empty!',          
+      msg: 'Email can not be empty!',
     });
-   
+
   }
   if (!req.body.password) {
-   
+
     res.send({
       status: 'error',
-      msg: 'Password can not be empty!',          
+      msg: 'Password can not be empty!',
     });
-    
+
   }
 
   try {
@@ -50,10 +50,10 @@ exports.create = async (req, res) => {
 
     // Validate user input
     if (!(email && password && firstName && lastName)) {
-      
+
       res.send({
         status: 'error',
-        msg: 'All input is required',          
+        msg: 'All input is required',
       });
     }
 
@@ -66,88 +66,87 @@ exports.create = async (req, res) => {
     if (oldUser) {
       res.send({
         status: 'error',
-        msg: 'User Already Exist. Please Login',          
+        msg: 'User Already Exist. Please Login',
       });
     }
-   
+
 
     //studentManagement:Boolean,
-        //userManagement:Boolean,
-        // courseManagement:Boolean,  
+    //userManagement:Boolean,
+    // courseManagement:Boolean,  
 
 
-    let data = req.body;  
+    let data = req.body;
     let filename = '';
     let filepath = '';
 
     if (req.files) {
       const myFile = req.files.avatarFile;
-      filename = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)+path.extname(myFile.name);
-    
-      console.log('ext : ',filename);
-      filepath = await fileUpload(myFile,filename);    
-      filepath = req.protocol+"://"+req.headers.host+filepath;
+      filename = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15) + path.extname(myFile.name);
+
+      console.log('ext : ', filename);
+      filepath = await fileUpload(myFile, filename);
+      filepath = req.protocol + "://" + req.headers.host + filepath;
     }
 
-    if(filepath !== '')
-    {      
+    if (filepath !== '') {
       data.avatarUrl = filepath;
-      data.avatarName = filename;      
+      data.avatarName = filename;
     }
-      
-    
-    if(req.body.studentManagement === 'true'){
-      data.studentManagement=true;
-    }
-    else{
-      data.studentManagement=false;
-    }
-    if(req.body.userManagement === 'true'){
-      data.userManagement=true;
-    }
-    else{
-      data.userManagement=false;
-    }
-    if(req.body.courseManagement === 'true'){
-      data.courseManagement=true;
-    }
-    else{
-      data.courseManagement=false;
-    }
-    if(req.body.fromAdmin.toString() === "true"){      
-      data.role= req.body.role;
-      data.phoneNumber= req.body.phoneNumber; 
-    }
-    else{
-      data.role= '-';
-      data.phoneNumber='-';
-    }
-    
 
-    data.firstName=firstName;
-    data.lastNamee=lastName;    
+
+    if (req.body.studentManagement === 'true') {
+      data.studentManagement = true;
+    }
+    else {
+      data.studentManagement = false;
+    }
+    if (req.body.userManagement === 'true') {
+      data.userManagement = true;
+    }
+    else {
+      data.userManagement = false;
+    }
+    if (req.body.courseManagement === 'true') {
+      data.courseManagement = true;
+    }
+    else {
+      data.courseManagement = false;
+    }
+    if (req.body.fromAdmin && req.body.fromAdmin.toString() === "true") {
+      data.role = req.body.role;
+      data.phoneNumber = req.body.phoneNumber;
+    }
+    else {
+      data.role = '-';
+      data.phoneNumber = '-';
+    }
+
+
+    data.firstName = firstName;
+    data.lastNamee = lastName;
     data.avatarUrl = filepath;
     data.avatarName = filename;
     data.email = email.toLowerCase();
+    data.username = email.toLowerCase() + (Math.random * 100000)
     data.password = await bcrypt.hash(password, 10);
-    data.status= 1;
-    data.address= '908 Jack Locks';    
-    data.city= 'Rancho Cordova';
-    data.company= 'Gleichner, Mueller and Tromp';
-    data.country= 'Madagascar';     
-    data.isVerified= false;   
-    data.state= '-';    
-    data.zipCode= '-';
+    data.status = 1;
+    data.address = '908 Jack Locks';
+    data.city = 'Rancho Cordova';
+    data.company = 'Gleichner, Mueller and Tromp';
+    data.country = 'Madagascar';
+    data.isVerified = false;
+    data.state = '-';
+    data.zipCode = '-';
 
-   
+    console.log(data)
     // Create user in our database
     const user = await Users.create(
       data
     );
-   
-    console.log(user);
-    if(user._id){ 
 
+    console.log(user);
+    if (user._id) {
       var user1 = JSON.parse(JSON.stringify(user));
 
       const token = jwt.sign(
@@ -157,32 +156,32 @@ exports.create = async (req, res) => {
           expiresIn: "2h",
         }
       );
-      
-      
-      user1.password='';
-      user1.displayName=user1.firstName+' '+user1.lastName;
+
+
+      user1.password = '';
+      user1.displayName = user1.firstName + ' ' + user1.lastName;
       user1.role = 'admin';
       user1.accessToken = token;
-      user1.photoURL=user1.avatarUrl;
+      user1.photoURL = user1.avatarUrl;
       res.status(200).send({
         status: 'success',
         msg: 'User created successfully.',
         data: user1,
-      
+
       });
-     
-   }
-   else{
-    res.send({
-      status: 'error',
-      msg: 'Technical problem. Please try again later.',          
-    });
-   }
+
+    }
+    else {
+      res.send({
+        status: 'error',
+        msg: 'Technical problem. Please try again later.',
+      });
+    }
   } catch (err) {
     console.log(err);
     res.send({
       status: 'error',
-      msg: 'catch error',          
+      msg: 'catch error',
     });
   }
 
@@ -200,8 +199,8 @@ exports.login = async (req, res) => {
     // Validate if user exist in our database
     var user = await Users.findOne({ email });
 
-    if (user && (await bcrypt.compare(password, user.password))) {  
-      
+    if (user && (await bcrypt.compare(password, user.password))) {
+
       var user1 = JSON.parse(JSON.stringify(user));
 
       const token = jwt.sign(
@@ -211,26 +210,26 @@ exports.login = async (req, res) => {
           expiresIn: "2h",
         }
       );
-      
-      
-      user1.password='';
-      user1.displayName=user1.firstName+' '+user1.lastName;
+
+
+      user1.password = '';
+      user1.displayName = user1.firstName + ' ' + user1.lastName;
       user1.role = 'admin';
       user1.accessToken = token;
-      user1.photoURL=user1.avatarUrl;
+      user1.photoURL = user1.avatarUrl;
       res.status(200).send({
         status: 'success',
         msg: 'valid',
         data: user1,
-      
+
       });
-    }else{
+    } else {
       res.status(400).send({
         status: 'invalid',
-        msg: 'Please enter valid username and password',          
+        msg: 'Please enter valid username and password',
       });
     }
-  
+
   } catch (err) {
     console.log(err);
   }
@@ -252,14 +251,14 @@ exports.findAll = (req, res) => {
   }
 
   // Users.find(condition)
-  Users.find().select({_id: 1,  email: 1,firstName:1,role:1,status:1})
+  Users.find().select({ _id: 1, email: 1, firstName: 1, role: 1, status: 1 })
     .then(data => {
-     
+
       res.status(200).send({
         status: 'success',
         msg: 'valid',
         data: data,
-      
+
       });
 
 
@@ -267,7 +266,7 @@ exports.findAll = (req, res) => {
     .catch(err => {
       res.status(500).send({
         status: 'error',
-        msg:  err.message || "Some error occurred while retrieving users."       
+        msg: err.message || "Some error occurred while retrieving users."
       });
     });
 };
@@ -289,17 +288,17 @@ exports.findOne = (req, res) => {
     });
 };
 
-const fileUpload = async (myFile,filename) => {
-  
-   return new Promise(resolve => {
-    
-    myFile.mv(`./public/profilepic/${filename}`).then(function(result) {
-      resolve('/public/profilepic/'+filename);
-    })  
-   
-    
+const fileUpload = async (myFile, filename) => {
+
+  return new Promise(resolve => {
+
+    myFile.mv(`./public/profilepic/${filename}`).then(function (result) {
+      resolve('/public/profilepic/' + filename);
+    })
+
+
   });
-  
+
 
 
 }
@@ -309,55 +308,54 @@ exports.update = async (req, res) => {
   if (!req.body) {
     return res.status(200).send({
       status: 'error',
-      msg: 'Input data can not empty'  
+      msg: 'Input data can not empty'
     });
   }
 
   //console.log(req.body);
   //console.log(req.files);
   let data = req.body;
-  
+
   let filename = '';
   let filepath = '';
 
   if (req.files) {
     const myFile = req.files.avatarFile;
-    filename = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)+path.extname(myFile.name);
-   
-    console.log('ext : ',filename);
-    filepath = await fileUpload(myFile,filename);    
-    filepath = req.protocol+"://"+req.headers.host+filepath;
+    filename = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15) + path.extname(myFile.name);
+
+    console.log('ext : ', filename);
+    filepath = await fileUpload(myFile, filename);
+    filepath = req.protocol + "://" + req.headers.host + filepath;
   }
 
-  if(filepath !== '')
-  {
+  if (filepath !== '') {
     //data = JSON.parse(JSON.stringify(data));
     data.avatarUrl = filepath;
     data.avatarName = filename;
     //data = JSON.stringify(data);
   }
-  console.log('data : ',data);  
+  console.log('data : ', data);
   const id = req.body.id;
   //avatarUrl
-  Users.findByIdAndUpdate(id,data, { useFindAndModify: true })
+  Users.findByIdAndUpdate(id, data, { useFindAndModify: true })
     .then(data => {
       if (!data) {
         res.status(200).send({
           status: 'error',
           msg: `Cannot update Users with id=${id}. Maybe User was not found!`
-         
+
         });
-      } else res.send({ 
+      } else res.send({
         status: 'success',
-        msg: "User was updated successsfully." 
+        msg: "User was updated successsfully."
       });
     })
     .catch(err => {
       res.status(200).send({
         status: 'error',
-        msg: "Error occured while data upadting.Please try again later" 
+        msg: "Error occured while data upadting.Please try again later"
       });
-    }); 
+    });
 };
 
 // Delete a Tutorial with the specified id in the request
@@ -368,20 +366,20 @@ exports.delete = (req, res) => {
     .then(data => {
       if (!data) {
         res.send({
-          status: 'success',          
+          status: 'success',
           msg: `Cannot delete Users with id=${id}. Maybe Users was not found!`
         });
       } else {
         res.send({
           status: 'success',
-          msg: "User was deleted successsfully." 
-          
+          msg: "User was deleted successsfully."
+
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        status: 'success',        
+        status: 'success',
         msg: "Could not delete Users with id=" + id
       });
     });
